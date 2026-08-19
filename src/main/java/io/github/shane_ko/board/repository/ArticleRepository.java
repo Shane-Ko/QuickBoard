@@ -14,33 +14,32 @@ public class ArticleRepository {
 
     private final EntityManager em;
 
+    // create
     public Article save(Article article) {
         em.persist(article);
         return article;
     }
 
-    public Optional<Article> findById(Long articleId) {
-        Article article = em.find(Article.class, articleId);
+    // read
+    public Optional<Article> findById(Long id) {
+        Article article = em.find(Article.class, id);
         return Optional.ofNullable(article);
     }
 
-//    public List<Article> findByTitle(String title) {
-//        //jpql
-//        List<Article> result = em.createQuery("SELECT a FROM Article a WHERE a.title = :title",Article.class)
-//                .setParameter("title",title)
-//                .getResultList();
-//        return result.stream().findAny();
-//    }
-
+    // read
     public List<Article> findAll() {
         return em.createQuery("SELECT a FROM Article a",Article.class)
                 .getResultList();
     }
 
+
+    // delete
     public void deleteById(Long id) {
-        Article article = em.find(Article.class,id);
-        if(article != null) {
-            em.remove(article);
-        }
+//        Article article = em.find(Article.class,id);
+//        if(article != null) {
+//            em.remove(article);
+//        }
+        Optional.ofNullable(em.find(Article.class, id))
+                .ifPresent(em::remove);
     }
 }

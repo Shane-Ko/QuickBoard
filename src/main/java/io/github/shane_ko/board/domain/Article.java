@@ -16,12 +16,10 @@ public class Article {
     private Long id;
     private String title;
     private String content;
-    // FK는 Many 쪽에서 가진다. 여기서 Many 는 Article
-    @ManyToOne
-    private Writer writer;
+    private String writer;
     private LocalDateTime createdAt;
 
-    public Article(String title,String content, Writer writer) {
+    public Article(String title,String content, String writer) {
         this.title = title;
         this.content = content;
         this.writer = writer;
