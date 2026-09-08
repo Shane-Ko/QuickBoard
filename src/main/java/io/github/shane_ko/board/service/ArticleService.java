@@ -1,17 +1,22 @@
 package io.github.shane_ko.board.service;
 
-import io.github.shane_ko.board.domain.Article;
-import io.github.shane_ko.board.dto.ArticleForm;
+import io.github.shane_ko.board.dto.request.ArticleUpdateRequest;
+import io.github.shane_ko.board.entity.Article;
+import io.github.shane_ko.board.dto.request.ArticleCreateRequest;
+import io.github.shane_ko.board.entity.Comment;
+import io.github.shane_ko.board.exception.ArticleNotFoundException;
 import io.github.shane_ko.board.repository.ArticleRepository;
-import io.github.shane_ko.board.repository.WriterRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
@@ -21,56 +26,61 @@ public class ArticleService {
     public ArticleService(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;}
 
+
+
+    /*
+        * 서비스에서 예외를 만들어 놓고
+        * 예외를 하나도 안받고 있었다
+        * TODO
+        *  예외 받기
+     */
     // 쓰기 메서드는 @Transactional로 오버라이드
-    // C
     @Transactional
-    public Long save(ArticleForm form) {
-        // 저장 후 id만 리턴 받는다 (보안상의 이유?)
+    public Article save(ArticleCreateRequest form) {
+        // 빈칸 검증 메서드
+
         // 1. dto -> entity 로 변환 (toEntity())
-        return articleRepository.save(form.toEntity()).getId();
+        return articleRepository.save(form.toEntity());
     }
 
-    //Read
+    //ReadOne
     public Article findOne(Long id) {
         return articleRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글 입니다 id = " + id));
+                .orElseThrow(() -> new ArticleNotFoundException(id));
     }
 
-    //TODO
+    //ReadAll
     public List<Article> findAll() {
         return articleRepository.findAll();
     }
 
-
-    //TODO 수정해야함
-    //Update
-    //Dirty Checking
     @Transactional
-    public void updateTitle(Long id, String title) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("수정하려는 글이 없습니다."));
-        article.updateTitle(title);
-    }
+    public Article update(Long id, ArticleUpdateRequest dto) {
 
-    @Transactional
-    public void updateContent(Long id, String content) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("수정하려는 글이 없습니다."));
-        article.updateContent(content);
-    }
+        /*
+        toEntity() 필요없음. 이미 조회된 데이터가 Entity 임
+         */
+        // 1. target 엔티티 조회
+        log.info("target 엔티티 조회");
+        Article target = articleRepository.findById(id)
+                .orElseThrow(() -> new ArticleNotFoundException(id));
 
-    @Transactional
-    public void updateBoth(Long id, String title, String content) {
-        updateTitle(id, title);
-        updateContent(id, content);
+        // 2. 업데이트
+        log.info("patch 메서드 실행");
+        target.update(dto.getTitle(), dto.getContent());
+
+        // save() 필요없음 - dirty checking
+        return target;
     }
 
 
     //Delete
+    @Transactional
     public void delete(Long id) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("삭제하려는 글이 없습니다 id = " + id));
-        articleRepository.deleteById(id);
+        Article target = articleRepository.findById(id)
+                .orElseThrow(() -> new ArticleNotFoundException(id));
+        articleRepository.deleteById(target.getId());
+        log.info(id + "번 게시글 삭제성공");
     }
 }

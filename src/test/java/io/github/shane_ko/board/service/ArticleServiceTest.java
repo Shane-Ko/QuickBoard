@@ -1,7 +1,7 @@
 package io.github.shane_ko.board.service;
 
-import io.github.shane_ko.board.domain.Article;
-import io.github.shane_ko.board.dto.ArticleForm;
+import io.github.shane_ko.board.entity.Article;
+import io.github.shane_ko.board.dto.request.ArticleCreateRequest;
 import io.github.shane_ko.board.repository.ArticleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,10 @@ public class ArticleServiceTest {
     @Test
     void save_성공() {
         // given
-        ArticleForm articleForm = new ArticleForm("제목","내용","코파");
+        ArticleCreateRequest articleCreateRequest = new ArticleCreateRequest("제목","내용","코파");
 
         //when
-        Long savedId = articleService.save(articleForm);
+        Long savedId = articleService.save(articleCreateRequest);
         Article found = articleRepository.findById(savedId).orElseThrow();
 
         //then
@@ -40,8 +40,8 @@ public class ArticleServiceTest {
     @Test
     void id로_조회하면_해당_글_반환한다() {
         // given
-        ArticleForm articleForm = new ArticleForm("제목","내용","코파");
-        Long savedId = articleService.save(articleForm);
+        ArticleCreateRequest articleCreateRequest = new ArticleCreateRequest("제목","내용","코파");
+        Long savedId = articleService.save(articleCreateRequest);
 
         // when
         Article article = articleService.findOne(savedId);
@@ -68,8 +68,8 @@ public class ArticleServiceTest {
     @Test
     void id로_게시글_삭제() {
         // given
-        ArticleForm articleForm = new ArticleForm("제목","내용","코파");
-        Long savedId = articleService.save(articleForm);
+        ArticleCreateRequest articleCreateRequest = new ArticleCreateRequest("제목","내용","코파");
+        Long savedId = articleService.save(articleCreateRequest);
 
         // when
         articleService.delete(savedId);     // 해당 글 삭제
@@ -92,52 +92,42 @@ public class ArticleServiceTest {
     }
 
     @Test
-    void 게시글_제목_수정() {
+    void 제목_수정 () {
         //given
-        ArticleForm articleForm = new ArticleForm("제목","내용","코파");
-        Long savedId = articleService.save(articleForm);
-        Article found = articleRepository.findById(savedId).orElseThrow();
+        ArticleCreateRequest articleCreateRequest = new ArticleCreateRequest("제목","내용","코파");
+        Long savedId = articleService.save(articleCreateRequest);
 
-        String newTitle = "수정된제목";
+        // when
+        Article updatedTitleArticle = articleService.update(savedId, "수정된제목","내용");
 
-        //when
-        articleService.updateTitle(savedId, newTitle);
-
-        //then
-        assertThat(found.getTitle()).isEqualTo("수정된제목");
+        // then
+        assertThat(updatedTitleArticle.getTitle()).isEqualTo("수정된제목");
     }
 
     @Test
-    void 게시글_내용_수정() {
+    void 내용_수정 () {
         //given
-        ArticleForm articleForm = new ArticleForm("제목","내용","코파");
-        Long savedId = articleService.save(articleForm);
-        Article found = articleRepository.findById(savedId).orElseThrow();
+        ArticleCreateRequest articleCreateRequest = new ArticleCreateRequest("제목","내용","코파");
+        Long savedId = articleService.save(articleCreateRequest);
 
-        String newContent = "수정된내용";
+        // when
+        Article updatedContentArticle = articleService.update(savedId, "제목","수정된내용");
 
-        //when
-        articleService.updateContent(savedId, newContent);
-
-        //then
-        assertThat(found.getContent()).isEqualTo("수정된내용");
+        // then
+        assertThat(updatedContentArticle.getContent()).isEqualTo("수정된내용");
     }
 
     @Test
-    void 게시글_제목_내용_모두_수정() {
+    void 제목_내용_수정 () {
         //given
-        ArticleForm articleForm = new ArticleForm("제목","내용","코파");
-        Long savedId = articleService.save(articleForm);
-        Article found = articleRepository.findById(savedId).orElseThrow();
+        ArticleCreateRequest articleCreateRequest = new ArticleCreateRequest("제목","내용","코파");
+        Long savedId = articleService.save(articleCreateRequest);
 
-        String newTitle = "수정된제목";
-        String newContent = "수정된내용";
+        // when
+        Article updatedArticle = articleService.update(savedId, "수정된제목","수정된내용");
 
-        //when
-        articleService.updateBoth(savedId, newTitle, newContent);
-
-        //then
-        assertThat(found.getTitle()).isEqualTo("수정된제목");
-        assertThat(found.getContent()).isEqualTo("수정된내용");
+        // then
+        assertThat(updatedArticle.getTitle()).isEqualTo("수정된제목");
+        assertThat(updatedArticle.getContent()).isEqualTo("수정된내용");
     }
 }

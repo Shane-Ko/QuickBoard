@@ -1,6 +1,7 @@
-package io.github.shane_ko.board.domain;
+package io.github.shane_ko.board.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,11 +27,10 @@ public class Article {
         this.createdAt = LocalDateTime.now();
     }
 
-    public void updateTitle(String newTitle) {
-        this.title = newTitle;
+    public void update(String title, String content) {
+        if (title != null) this.title = title;
+        if (content != null) this.content = content;
     }
 
-    public void updateContent(String newContent) {
-        this.content = newContent;
-    }
+
 }

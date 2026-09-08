@@ -1,6 +1,6 @@
 package io.github.shane_ko.board.repository;
 
-import io.github.shane_ko.board.domain.Article;
+import io.github.shane_ko.board.entity.Article;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
