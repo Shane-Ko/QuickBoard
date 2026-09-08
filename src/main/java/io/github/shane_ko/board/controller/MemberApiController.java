@@ -33,7 +33,7 @@ public class MemberApiController {
         // Entity -> DTO
         MemberResponse response = MemberResponse.from(created);
         URI location = URI.create("/api/members/" + created.getId());
-        log.info("생성된 리소스 위치: {}", location);
+        log.info("가입완료: 리소스 위치: {}", location);
         return ResponseEntity.created(location).body(response);
     }
 }

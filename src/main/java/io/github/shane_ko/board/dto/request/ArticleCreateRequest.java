@@ -1,7 +1,9 @@
 package io.github.shane_ko.board.dto.request;
 
 import io.github.shane_ko.board.entity.Article;
+import io.github.shane_ko.board.entity.Member;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,18 +17,18 @@ public class ArticleCreateRequest {
     private String title;
     @NotBlank(message = "내용은 필수 입니다.")
     private String content;
-    @NotBlank(message = "작성자는 필수 입니다.")
-    // TODO : writer 는 인증기능 추가시 제거
-    private String writer;
 
-    public ArticleCreateRequest(String title, String content, String writer) {
+    private Member member;
+
+
+    public ArticleCreateRequest(String title, String content, Member member) {
         this.title = title;
         this.content = content;
-        this.writer = writer;
+        this.member = member;
     }
 
     public Article toEntity() {
-        return new Article(title, content, writer);
+        return new Article(title, content, member);
     }
 
 }

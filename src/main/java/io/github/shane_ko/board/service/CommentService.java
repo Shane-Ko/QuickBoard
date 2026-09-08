@@ -34,7 +34,7 @@ public class CommentService {
                 .orElseThrow(() -> new ArticleNotFoundException(articleId));
 
         // Comment 생성
-        Comment newComment = new Comment(dto.getWriter(), dto.getContent(), foundArticle);
+        Comment newComment = new Comment(dto.getMember(), dto.getContent(), foundArticle);
 
         // 저장
         return commentRepository.save(newComment);

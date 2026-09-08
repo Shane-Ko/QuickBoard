@@ -21,7 +21,7 @@ public class ArticleResponse {
                 article.getId(),
                 article.getTitle(),
                 article.getContent(),
-                article.getWriter(),
+                article.getMember().getNickname(),
                 article.getCreatedAt()
         );
     }

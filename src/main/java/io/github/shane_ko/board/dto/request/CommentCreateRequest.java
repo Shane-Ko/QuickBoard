@@ -1,6 +1,7 @@
 package io.github.shane_ko.board.dto.request;
 
 import io.github.shane_ko.board.entity.Comment;
+import io.github.shane_ko.board.entity.Member;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,14 +16,13 @@ import lombok.ToString;
 @ToString
 public class CommentCreateRequest {
 
-    // TODO : writer 는 인증기능 추가시 제거
-    @NotBlank(message = "댓글 작성자는 필수 입니다.")
-    private String writer;
+    private Member member;
+
     @NotBlank(message = "댓글 내용은 필수 입니다.")
     private String content;
 
-    public CommentCreateRequest(String writer, String content) {
-        this.writer = writer;
+    public CommentCreateRequest(Member member, String content) {
+        this.member = member;
         this.content = content;
     }
 }

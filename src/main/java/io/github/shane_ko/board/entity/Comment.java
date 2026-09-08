@@ -18,14 +18,19 @@ public class Comment {
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
-    @Column(nullable = false)
-    private String writer;
+
+    // Comment : Member = N : 1 다대일 단방향 연관관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Column(nullable = false)
     private String content;
+
     private LocalDateTime createdAt;
 
-    public Comment(String writer, String content, Article article) {
-        this.writer = writer;
+    public Comment(Member member, String content, Article article) {
+        this.member = member;
         this.content = content;
         this.article = article;
         this.createdAt = LocalDateTime.now();

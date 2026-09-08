@@ -15,15 +15,21 @@ public class Article {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Article : Member = N : 1 다대일 단방향 연관관계
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     private String title;
     private String content;
-    private String writer;
+
     private LocalDateTime createdAt;
 
-    public Article(String title,String content, String writer) {
+    public Article(String title,String content, Member member) {
         this.title = title;
         this.content = content;
-        this.writer = writer;
+        this.member = member;
         this.createdAt = LocalDateTime.now();
     }
 

@@ -46,7 +46,7 @@ public class CommentApiController {
         // Entity -> DTO
         CommentResponse response = CommentResponse.from(created);
         URI location = URI.create("/api/comments/"+ created.getId());
-        log.info("생성된 리소스 위치: {}", location);
+        log.info("생성완료: 리소스 위치: {}", location);
         return ResponseEntity.created(location).body(response);
     }
 
@@ -54,9 +54,9 @@ public class CommentApiController {
     @GetMapping("/api/articles/{articleId}/comments")
     public ResponseEntity< List<CommentResponse> > readAll (@PathVariable Long articleId) {
         log.info("전체 댓글 조회 요청 받음");
-        List<Comment> comments = commentService.index(articleId);
+        List<Comment> commentsList = commentService.index(articleId);
 
-        List<CommentResponse> responses = comments.stream()
+        List<CommentResponse> responses = commentsList.stream()
                 .map(CommentResponse::from)
              // .map(comment -> CommentResponse.from(comment))
                 .toList();

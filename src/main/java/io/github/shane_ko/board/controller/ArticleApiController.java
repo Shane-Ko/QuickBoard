@@ -28,29 +28,26 @@ public class ArticleApiController {
     READ - 게시글 하나 조회
      */
     @GetMapping("/api/articles/{id}")
-    public ArticleResponse show(@PathVariable Long id){
+    public ResponseEntity<ArticleResponse> show(@PathVariable Long id) {
+        log.info("id={} 게시글 조회 요청",id);
         Article one = articleService.findOne(id);
-        return ArticleResponse.from(one);
+        ArticleResponse response = ArticleResponse.from(one);
+        return ResponseEntity.ok(response);
     }
+
     /*
     READ - 게시글 모두 조회
      */
-//    @GetMapping("/api/articles")
-//    public List<ArticleResponse> index() {
-//        List<Article> all = articleService.findAll();
-//        List<ArticleResponse> responsesList = new ArrayList<>();
-//        for (Article article : all) {
-//            responsesList.add(ArticleResponse.from(article));
-//        }
-//        return responsesList;
-//    }
-
-    // stream 버전
     @GetMapping("/api/articles")
-    public List<ArticleResponse> index() {
-        return articleService.findAll().stream()
+    public ResponseEntity< List<ArticleResponse> > showAll() {
+        log.info("모든 게시글 조회 요청");
+        List<Article> articlesList = articleService.findAll();
+
+        List<ArticleResponse> responsesList = articlesList.stream()
                 .map(ArticleResponse::from)
                 .toList();
+
+        return ResponseEntity.ok(responsesList);
     }
 
     /*
@@ -63,7 +60,7 @@ public class ArticleApiController {
         // Entity (Article) -> DTO
         ArticleResponse response = ArticleResponse.from(created);
         URI location = URI.create("/api/articles/" + created.getId());
-        log.info("생성된 리소스 위치: {}",location);
+        log.info("생성완료: 리소스 위치: {}",location);
         return ResponseEntity.created(location).body(response);
     }
 
