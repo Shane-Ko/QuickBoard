@@ -24,7 +24,6 @@ public class ArticleApiController {
         this.articleService = articleService;
     }
 
-
     /*
     READ - 게시글 하나 조회
      */

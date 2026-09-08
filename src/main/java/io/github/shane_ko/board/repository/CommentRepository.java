@@ -3,44 +3,19 @@ package io.github.shane_ko.board.repository;
 import io.github.shane_ko.board.entity.Comment;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-@RequiredArgsConstructor
-public class CommentRepository {
+public interface CommentRepository extends JpaRepository<Comment,Long> {
 
-    private final EntityManager em;
+    // 게시글별 댓글 목록 조회 - 최신순 조회
+    @Query("SELECT c FROM Comment c WHERE c.article.id = :articleId ORDER BY c.createdAt DESC")
+    List<Comment> findByArticleId(@Param("articleId") Long articleId);
 
-
-    //CREATE
-    public Comment save (Comment comment) {
-        em.persist(comment);
-        return comment;
-    }
-
-    //READ_ONE
-    public Optional<Comment> findById(Long commentId) {
-        Comment comment = em.find(Comment.class, commentId);
-        return Optional.ofNullable(comment);
-
-    }
-
-
-    //READ_ALL
-    public List<Comment> findAll(Long articleId) {
-        return em.createQuery("SELECT c FROM Comment c WHERE c.article.id = :articleId ORDER BY c.createdAt DESC"
-        , Comment.class)
-                .setParameter("articleId",articleId)    // :articleId 의 값을 채우기 위함
-                // SQL injection 방지도 가능
-                .getResultList();
-    }
-
-    //DELETE
-    public void delete (Comment comment) {
-        em.remove(comment);
-    }
 }

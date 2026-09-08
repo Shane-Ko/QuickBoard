@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    //
+    // CommentNotFoundException (404)
     @ExceptionHandler(CommentNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlerCommentNotFound(
             CommentNotFoundException e,
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    // 2. 예상치 못한 모든 예외 처리 (500) - Fallback
+    // 예상치 못한 모든 예외 처리 (500) - Fallback
     @ExceptionHandler(Exception.class)  // 모든 예외의 조상
     public ResponseEntity<ErrorResponse> handleAll (
             Exception e,
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    // 3. 댓글 작성시 공백에 대한 예외 처리
+    // 댓글 작성시 공백에 대한 예외 처리 (400)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handlerArgumentNotValid(
             MethodArgumentNotValidException e,
@@ -84,6 +84,40 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return ResponseEntity.status(ErrorCode.INVALID_INPUT_VALUE.getStatus())
+                .body(response);
+    }
+
+    // 중복 아이디 오류 (409)
+    @ExceptionHandler(DuplicateUsernameException.class)
+    public ResponseEntity<ErrorResponse> handlerDuplicateUsername(
+            DuplicateUsernameException e,
+            HttpServletRequest request ) {
+
+        // 로그
+        log.warn("[DuplicateUsername] {} - path : {}", e.getMessage(),request.getRequestURI());
+
+        // ErrorResponse 조립
+        ErrorResponse response = ErrorResponse.of(
+                ErrorCode.DUPLICATE_USERNAME,
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(ErrorCode.DUPLICATE_USERNAME.getStatus())
+                .body(response);
+    }
+
+    // 중복 닉네임 오류(409)
+    @ExceptionHandler(DuplicateNicknameException.class)
+    public ResponseEntity<ErrorResponse> handlerDuplicateNickname(
+            DuplicateNicknameException e,
+            HttpServletRequest request) {
+
+        log.warn("[DuplicateNickname] {} - path : {}", e.getMessage(),request.getRequestURI());
+
+        ErrorResponse response = ErrorResponse.of(
+                ErrorCode.DUPLICATE_NICKNAME,
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(ErrorCode.DUPLICATE_NICKNAME.getStatus())
                 .body(response);
     }
 

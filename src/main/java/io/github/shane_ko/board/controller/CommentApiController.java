@@ -43,6 +43,7 @@ public class CommentApiController {
     public ResponseEntity<CommentResponse> create(@PathVariable Long articleId, @Valid @RequestBody CommentCreateRequest dto) {
         log.info("댓글 작성 요청 받음");
         Comment created = commentService.save(articleId,dto);
+        // Entity -> DTO
         CommentResponse response = CommentResponse.from(created);
         URI location = URI.create("/api/comments/"+ created.getId());
         log.info("생성된 리소스 위치: {}", location);

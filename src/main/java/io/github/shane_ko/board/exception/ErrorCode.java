@@ -13,7 +13,13 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST,"입력값이 올바르지 않습니다"),
 
     // 댓글 관련
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"요청하신 댓글을 찾을 수 없습니다.");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"요청하신 댓글을 찾을 수 없습니다."),
+
+    //회원아이디 중복
+    DUPLICATE_USERNAME(HttpStatus.CONFLICT,"이미 존재하는 아이디 입니다"),
+    //회원닉네임 중복
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT,"이미 존재하는 닉네임 입니다");
+
 
 
     /*

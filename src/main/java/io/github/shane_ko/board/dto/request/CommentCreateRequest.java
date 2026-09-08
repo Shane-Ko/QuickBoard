@@ -25,10 +25,4 @@ public class CommentCreateRequest {
         this.writer = writer;
         this.content = content;
     }
-
-//    // TODO : "조회한 Article로 Comment를 만든다" — 이건 명백히 Service의 관심사야. DTO 관심사가 아님.
-//    public Comment toEntity() {
-//        return new Comment();
-//    }
-
 }

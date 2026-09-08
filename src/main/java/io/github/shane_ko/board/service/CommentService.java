@@ -45,7 +45,7 @@ public class CommentService {
         Article foundArticle = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ArticleNotFoundException(articleId));
 
-        return commentRepository.findAll(foundArticle.getId());
+        return commentRepository.findByArticleId(foundArticle.getId());
     }
 
     // Update
