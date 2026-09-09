@@ -74,10 +74,11 @@ public class ArticleApiController {
      */
     @PatchMapping("/api/articles/{id}")
     public ResponseEntity<ArticleResponse> update (@PathVariable Long id,
+                                                   @AuthenticationPrincipal Long userId,
                                                    @Valid @RequestBody ArticleUpdateRequest dto) {
         log.info("수정요청들어옴");
         // 수정
-        Article updated = articleService.update(id, dto);
+        Article updated = articleService.update(id, dto,userId);
 
         // Entity -> DTO
         ArticleResponse response = ArticleResponse.from(updated);
@@ -91,8 +92,9 @@ public class ArticleApiController {
     DELETE - 글 삭제
      */
     @DeleteMapping("/api/articles/{id}")
-    public ResponseEntity<Void> delete (@PathVariable Long id) {
-        articleService.delete(id);
+    public ResponseEntity<Void> delete (@PathVariable Long id,
+                                        @AuthenticationPrincipal Long userId) {
+        articleService.delete(id,userId);
         return ResponseEntity.noContent().build();
     }
 

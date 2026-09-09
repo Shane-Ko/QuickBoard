@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
 
     // 예상치 못한 모든 예외 처리 (500) - Fallback
     @ExceptionHandler(Exception.class)  // 모든 예외의 조상
-    public ResponseEntity<ErrorResponse> handleAll (
+    public ResponseEntity<ErrorResponse> handleAll(
             Exception e,
             HttpServletRequest request) {
 
@@ -91,10 +91,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateUsernameException.class)
     public ResponseEntity<ErrorResponse> handlerDuplicateUsername(
             DuplicateUsernameException e,
-            HttpServletRequest request ) {
+            HttpServletRequest request) {
 
         // 로그
-        log.warn("[DuplicateUsername] {} - path : {}", e.getMessage(),request.getRequestURI());
+        log.warn("[DuplicateUsername] {} - path : {}", e.getMessage(), request.getRequestURI());
 
         // ErrorResponse 조립
         ErrorResponse response = ErrorResponse.of(
@@ -111,7 +111,7 @@ public class GlobalExceptionHandler {
             DuplicateNicknameException e,
             HttpServletRequest request) {
 
-        log.warn("[DuplicateNickname] {} - path : {}", e.getMessage(),request.getRequestURI());
+        log.warn("[DuplicateNickname] {} - path : {}", e.getMessage(), request.getRequestURI());
 
         ErrorResponse response = ErrorResponse.of(
                 ErrorCode.DUPLICATE_NICKNAME,
@@ -153,7 +153,19 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    // 접근 권한 예외 처리
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponse> handlerForbidden(
+            ForbiddenException e,
+            HttpServletRequest request) {
+        log.warn("[Forbidden]");
 
+        ErrorResponse response = ErrorResponse.of(
+                ErrorCode.FORBIDDEN,
+                request.getRequestURI()
+        );
 
-
+        return ResponseEntity.status(ErrorCode.FORBIDDEN.getStatus())
+                .body(response);
+    }
 }

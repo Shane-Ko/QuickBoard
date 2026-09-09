@@ -63,7 +63,6 @@ public class CommentApiController {
 
         List<CommentResponse> responses = commentsList.stream()
                 .map(CommentResponse::from)
-             // .map(comment -> CommentResponse.from(comment))
                 .toList();
 
         return ResponseEntity.ok(responses);
@@ -71,10 +70,13 @@ public class CommentApiController {
 
     // Update
     @PatchMapping("/api/comments/{id}")
-    public ResponseEntity<CommentResponse> edit (@PathVariable Long id , @Valid @RequestBody CommentUpdateRequest dto) {
+    public ResponseEntity<CommentResponse> edit (@PathVariable Long id ,
+                                                 @Valid @RequestBody CommentUpdateRequest dto,
+                                                 @AuthenticationPrincipal Long userId) {
         log.info("댓글 수정 요청 받음");
 
-        Comment updated = commentService.update(id, dto);
+
+        Comment updated = commentService.update(id, userId,dto);
 
         // Entity -> DTO
         CommentResponse response = CommentResponse.from(updated);
@@ -83,9 +85,10 @@ public class CommentApiController {
 
     // Delete
     @DeleteMapping("/api/comments/{id}")
-    public ResponseEntity<Void> delete (@PathVariable Long id) {
+    public ResponseEntity<Void> delete (@PathVariable Long id,
+                                        @AuthenticationPrincipal Long userId) {
         log.info("댓글 삭제 요청 id={}",id);
-        commentService.delete(id);
+        commentService.delete(id,userId);
         return ResponseEntity.noContent().build();
      }
 

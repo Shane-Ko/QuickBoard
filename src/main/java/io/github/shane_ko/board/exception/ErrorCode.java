@@ -22,7 +22,9 @@ public enum ErrorCode {
 
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED,"아이디 또는 비밀번호가 일치하지 않습니다"),
 
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다.");
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."),
+
+    FORBIDDEN(HttpStatus.FORBIDDEN,"접근 권한이 없습니다");
 
 
 

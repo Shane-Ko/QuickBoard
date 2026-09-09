@@ -8,6 +8,7 @@ import io.github.shane_ko.board.entity.Comment;
 import io.github.shane_ko.board.entity.Member;
 import io.github.shane_ko.board.exception.ArticleNotFoundException;
 import io.github.shane_ko.board.exception.CommentNotFoundException;
+import io.github.shane_ko.board.exception.ForbiddenException;
 import io.github.shane_ko.board.exception.MemberNotFoundException;
 import io.github.shane_ko.board.repository.ArticleRepository;
 import io.github.shane_ko.board.repository.CommentRepository;
@@ -59,9 +60,13 @@ public class CommentService {
 
     // Update
     @Transactional
-    public Comment update(Long id, CommentUpdateRequest dto) {
+    public Comment update(Long id, Long userId, CommentUpdateRequest dto) {
         Comment target = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFoundException(id));
+
+        if (!target.getMember().getId().equals(userId)) {
+            throw new ForbiddenException();
+        }
         target.update(dto.getContent());
 
 
@@ -71,9 +76,14 @@ public class CommentService {
 
     // Delete
     @Transactional
-    public void delete (Long id) {
+    public void delete (Long id, Long userId) {
         Comment target = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFoundException(id));
+
+        if (!target.getMember().getId().equals(userId)) {
+            throw new ForbiddenException();
+        }
+
         commentRepository.delete(target);
     }
 }
