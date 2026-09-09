@@ -18,16 +18,12 @@ public class ArticleCreateRequest {
     @NotBlank(message = "내용은 필수 입니다.")
     private String content;
 
-    private Member member;
-
-
-    public ArticleCreateRequest(String title, String content, Member member) {
+    public ArticleCreateRequest(String title, String content) {
         this.title = title;
         this.content = content;
-        this.member = member;
     }
 
-    public Article toEntity() {
+    public Article toEntity(Member member) {
         return new Article(title, content, member);
     }
 

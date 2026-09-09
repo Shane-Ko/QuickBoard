@@ -4,8 +4,12 @@ import io.github.shane_ko.board.dto.request.ArticleUpdateRequest;
 import io.github.shane_ko.board.entity.Article;
 import io.github.shane_ko.board.dto.request.ArticleCreateRequest;
 import io.github.shane_ko.board.entity.Comment;
+import io.github.shane_ko.board.entity.Member;
 import io.github.shane_ko.board.exception.ArticleNotFoundException;
+import io.github.shane_ko.board.exception.MemberNotFoundException;
 import io.github.shane_ko.board.repository.ArticleRepository;
+import io.github.shane_ko.board.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,30 +21,19 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional(readOnly = true)
 @Slf4j
+@RequiredArgsConstructor
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
-
-    // 연습으로 생성자 직접 넣음
-    @Autowired
-    public ArticleService(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;}
+    private final MemberRepository memberRepository;
 
 
-
-    /*
-        * 서비스에서 예외를 만들어 놓고
-        * 예외를 하나도 안받고 있었다
-        * TODO
-        *  예외 받기
-     */
-    // 쓰기 메서드는 @Transactional로 오버라이드
     @Transactional
-    public Article save(ArticleCreateRequest form) {
-        // 빈칸 검증 메서드
-
+    public Article save(ArticleCreateRequest form, Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException(id));
         // 1. dto -> entity 로 변환 (toEntity())
-        return articleRepository.save(form.toEntity());
+        return articleRepository.save(form.toEntity(member));
     }
 
     //ReadOne

@@ -121,5 +121,39 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    // 아이디 혹은 비밀번호 일치 실패
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handlerInvalidCredentials(
+            InvalidCredentialsException e,
+            HttpServletRequest request) {
+        log.warn("[InvalidCredentials]");
+
+        ErrorResponse response = ErrorResponse.of(
+                ErrorCode.INVALID_CREDENTIALS,
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(ErrorCode.INVALID_CREDENTIALS.getStatus())
+                .body(response);
+    }
+
+    // 사용자를 찾을 수 없음
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerMemberNotFound(
+            MemberNotFoundException e,
+            HttpServletRequest request) {
+        log.warn("[MemberNotFound] {} - path: {}", e.getMessage(), request.getRequestURI());
+
+        ErrorResponse response = ErrorResponse.of(
+                ErrorCode.MEMBER_NOT_FOUND,
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(ErrorCode.MEMBER_NOT_FOUND.getStatus())
+                .body(response);
+    }
+
+
+
 
 }

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -54,9 +55,13 @@ public class ArticleApiController {
     CREATE - 새글 작성
      */
     @PostMapping("/api/articles")
-    public ResponseEntity<ArticleResponse> create (@Valid @RequestBody ArticleCreateRequest dto) {
-        log.info("글작성 요청 받음");
-        Article created = articleService.save(dto);
+    public ResponseEntity<ArticleResponse> create (
+            @Valid @RequestBody ArticleCreateRequest dto,
+            @AuthenticationPrincipal Long userId
+
+    ) {
+        log.info("글작성 요청 받음 (userId={})", userId);
+        Article created = articleService.save(dto,userId);
         // Entity (Article) -> DTO
         ArticleResponse response = ArticleResponse.from(created);
         URI location = URI.create("/api/articles/" + created.getId());
