@@ -28,6 +28,7 @@ public class ArticleService {
     private final MemberRepository memberRepository;
 
 
+    // Create
     @Transactional
     public Article save(ArticleCreateRequest form, Long id) {
         Member member = memberRepository.findById(id)

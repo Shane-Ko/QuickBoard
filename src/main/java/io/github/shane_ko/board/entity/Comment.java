@@ -29,10 +29,10 @@ public class Comment {
 
     private LocalDateTime createdAt;
 
-    public Comment(Member member, String content, Article article) {
+    public Comment(Member member, Article article, String content) {
         this.member = member;
-        this.content = content;
         this.article = article;
+        this.content = content;
         this.createdAt = LocalDateTime.now();
     }
 

@@ -13,6 +13,7 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -40,9 +41,13 @@ public class CommentApiController {
      */
     // Create
     @PostMapping("/api/articles/{articleId}/comments")
-    public ResponseEntity<CommentResponse> create(@PathVariable Long articleId, @Valid @RequestBody CommentCreateRequest dto) {
+    public ResponseEntity<CommentResponse> create(
+            @PathVariable Long articleId,
+            @Valid @RequestBody CommentCreateRequest dto,
+            @AuthenticationPrincipal Long userId
+    ) {
         log.info("댓글 작성 요청 받음");
-        Comment created = commentService.save(articleId,dto);
+        Comment created = commentService.save(userId, articleId, dto);
         // Entity -> DTO
         CommentResponse response = CommentResponse.from(created);
         URI location = URI.create("/api/comments/"+ created.getId());

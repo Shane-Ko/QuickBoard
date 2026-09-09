@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.net.URL;
 
 @RestController
 @Slf4j
@@ -26,13 +25,13 @@ public class MemberApiController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/api/members")
+    @PostMapping("/api/join")
     public ResponseEntity<MemberResponse> signUp(@Valid @RequestBody MemberCreateRequest dto) {
         log.info("회원가입 요청 받음");
         Member created = memberService.create(dto);
         // Entity -> DTO
         MemberResponse response = MemberResponse.from(created);
-        URI location = URI.create("/api/members/" + created.getId());
+        URI location = URI.create("/api/join/" + created.getId());
         log.info("가입완료: 리소스 위치: {}", location);
         return ResponseEntity.created(location).body(response);
     }

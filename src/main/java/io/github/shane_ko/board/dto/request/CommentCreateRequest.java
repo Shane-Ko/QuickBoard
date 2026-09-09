@@ -16,13 +16,10 @@ import lombok.ToString;
 @ToString
 public class CommentCreateRequest {
 
-    private Member member;
-
     @NotBlank(message = "댓글 내용은 필수 입니다.")
     private String content;
 
-    public CommentCreateRequest(Member member, String content) {
-        this.member = member;
+    public CommentCreateRequest(String content) {
         this.content = content;
     }
 }
