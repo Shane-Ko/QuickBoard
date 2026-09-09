@@ -18,7 +18,11 @@ public enum ErrorCode {
     //회원아이디 중복
     DUPLICATE_USERNAME(HttpStatus.CONFLICT,"이미 존재하는 아이디 입니다"),
     //회원닉네임 중복
-    DUPLICATE_NICKNAME(HttpStatus.CONFLICT,"이미 존재하는 닉네임 입니다");
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT,"이미 존재하는 닉네임 입니다"),
+
+    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED,"아이디 또는 비밀번호가 일치하지 않습니다"),
+
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다.");
 
 
 
