@@ -1,26 +1,10 @@
 spring:
   application:
     name: board
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/board?serverTimezone=Asia/Seoul
-    username: root
-    password: 1234
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQLDialect
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
+  profiles:
+    active: dev          # ← 기본 활성 프로파일
 
 jwt:
-  secret: ${JWT_SECRET} # 비밀키는 공개하면 안되므로 intellij 환경변수로 빼서 사용
+  secret: ${JWT_SECRET}
   token:
-    access-expiration: 3600000 # 1시간 = 1000 * 60 * 60 * 2
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-
+    access-expiration: 3600000

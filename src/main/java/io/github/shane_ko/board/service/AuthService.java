@@ -36,6 +36,6 @@ public class AuthService {
         // 3. 토큰 발급
         String token = jwtTokenProvider.createToken(member.getId());
         // 4. TokenResponse에 담아서 리턴
-        return new TokenResponse(token);
+        return TokenResponse.of(token, member);
     }
 }
