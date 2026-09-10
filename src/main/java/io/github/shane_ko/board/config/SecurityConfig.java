@@ -1,5 +1,6 @@
 package io.github.shane_ko.board.config;
 
+import io.github.shane_ko.board.jwt.JwtAuthenticationEntryPoint;
 import io.github.shane_ko.board.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
     @Bean
@@ -26,12 +28,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, HttpSession httpSession, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   HttpSession httpSession,
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter
+    ) throws Exception {
 
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()                      // 로그인
                         .requestMatchers(HttpMethod.POST, "/api/join").permitAll()    // 회원가입
+                        .requestMatchers(HttpMethod.GET, "/api/articles/**").permitAll()
                         .anyRequest().authenticated()                                   // 나머지는 인증 필요하도록
                 )
                 // CSRF 비활성화 (REST API)
@@ -43,6 +49,9 @@ public class SecurityConfig {
                 // 세션설정
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                )
                 // 필터 등록
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

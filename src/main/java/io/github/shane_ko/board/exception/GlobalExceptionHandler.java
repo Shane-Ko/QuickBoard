@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -69,22 +71,29 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    // 댓글 작성시 공백에 대한 예외 처리 (400)
+    // 입력 형싱 , 공백에 대한 에외 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handlerArgumentNotValid(
-            MethodArgumentNotValidException e,
-            HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleValidation(
+            MethodArgumentNotValidException e, HttpServletRequest request) {
 
-        // 로그 남기기
-        log.warn("[MethodArgumentNotValid] {} - path : {}", e.getMessage(), request.getRequestURI());
+        log.warn("[Validation]");
 
-        // ErrorResponse 조립
+        // 각 필드 에러를 커스텀 FieldError로 변환
+        List<ErrorResponse.FieldError> fieldErrors = e.getBindingResult()
+                .getFieldErrors().stream()
+                .map(err -> new ErrorResponse.FieldError(
+                        err.getField(),
+                        err.getRejectedValue() == null ? "" : err.getRejectedValue().toString(),
+                        err.getDefaultMessage()
+                ))
+                .toList();
+
         ErrorResponse response = ErrorResponse.of(
                 ErrorCode.INVALID_INPUT_VALUE,
-                request.getRequestURI()
+                request.getRequestURI(),
+                fieldErrors
         );
-        return ResponseEntity.status(ErrorCode.INVALID_INPUT_VALUE.getStatus())
-                .body(response);
+        return ResponseEntity.status(ErrorCode.INVALID_INPUT_VALUE.getStatus()).body(response);
     }
 
     // 중복 아이디 오류 (409)
@@ -168,4 +177,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ErrorCode.FORBIDDEN.getStatus())
                 .body(response);
     }
+
+
 }
